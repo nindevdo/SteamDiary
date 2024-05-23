@@ -15,7 +15,7 @@ service_account_file = os.getenv("GOOGLE_SERVICE_ACCOUNT_FILE")
 calendar_id = os.getenv("GOOGLE_CALENDAR_ID")
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 credentials = Credentials.from_service_account_file( service_account_file, scopes=SCOPES)
-time_interval = 60
+time_interval = os.getenv("TIME_INTERVAL", 60)
 
 # Get games for user
 def get_games_for_user(user_id):
