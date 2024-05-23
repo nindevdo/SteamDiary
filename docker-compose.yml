@@ -1,0 +1,10 @@
+services:
+  steamdiary:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    environment:
+      - STEAM_USER_ID=${STEAM_USER_ID:-username}
+      - STEAM_API_KEY=${STEAM_API_KEY:-api_key}
+      - GOOGLE_SERVICE_ACCOUNT_FILE=${GOOGLE_SERVICE_ACCOUNT_FILE:-./credentials.json}
+      - GOOGLE_CALENDAR_ID=${GOOGLE_CALENDAR_ID:-calendar_id}

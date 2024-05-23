@@ -1,17 +1,21 @@
 import requests
+import pytz
 import os
 import json
 import time
+import datetime
 
-#from google.oauth2 import service_account
-#from googleapiclient.discovery import build
-#from datetime import datetime, timedelta
+from google.oauth2.service_account import Credentials
+from googleapiclient.discovery import build
 
 user_id = os.getenv("STEAM_USER_ID")
 api_key = os.getenv("STEAM_API_KEY")
 
-#service_account_file = 'path/to/service_account_file.json'  # Path to your service account JSON file
-#calendar_id = 'Your_Calendar_ID'
+service_account_file = os.getenv("GOOGLE_SERVICE_ACCOUNT_FILE")
+calendar_id = os.getenv("GOOGLE_CALENDAR_ID")
+SCOPES = ['https://www.googleapis.com/auth/calendar']
+credentials = Credentials.from_service_account_file( service_account_file, scopes=SCOPES)
+time_interval = 60
 
 # Get games for user
 def get_games_for_user(user_id):
@@ -66,7 +70,7 @@ def main(user_id):
             # Check if gameid has changed
             if current_gameid != previous_gameid:
                 # If this is not the first game, calculate the duration of the previous game
-                if start_time is not None:
+                if start_time is not None and current_gameid is not None:
                     end_time = time.time()
                     duration = end_time - start_time
                     gamename = get_game_name(previous_gameid)
@@ -85,15 +89,15 @@ def main(user_id):
                 previous_gameid = current_gameid
 
             # Wait for 1 minute
-            time.sleep(60)
+            time.sleep(time_interval)
 
         except Exception as e:
             print("Error occurred:", e)
 
             # Wait for 1 minute before retrying
-            time.sleep(60)
+            time.sleep(time_interval)
 
-# Get the game name by game id
+
 def get_game_name(game_id):
     url = f"https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key={api_key}&appid={game_id}&format=json"
 
@@ -104,34 +108,35 @@ def get_game_name(game_id):
     else:
         print("Failed to retrieve game information.")
         return None
+
  
+def unix_to_iso8601(timestamp):
+    """Convert Unix timestamp to ISO 8601 format."""
+    return datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc).isoformat()
+
 
 def add_event_to_calendar(gamename, duration, start_time, end_time):
-    # Authenticate with the Google Calendar API using a service account
-
-    credentials = service_account.Credentials.from_service_account_file(service_account_file)
     service = build('calendar', 'v3', credentials=credentials)
-    event_summary = f"🧙 {gamename}"
-    event_description = f"SteamDiary entry for {gamename} with {duration} time played."
-    print(event_description)
-    return
-    # Create event body
+    description = f"SteamDiary entry for {gamename} with {duration} time played."
+    location = "🎮 Steam"
+    summary = f"🧙 {gamename}"
+
     event = {
-        'summary': event_summary,
-        'description': event_description,
+        'summary': summary,
+        'location': location,
+        'description': description,
         'start': {
-            'dateTime': start_time.strftime('%Y-%m-%dT%H:%M:%S'),
-            'timeZone': 'Your_Timezone_Here',  # e.g., 'America/New_York'
+            'dateTime': unix_to_iso8601(start_time),
+            'timeZone': 'UTC'
         },
         'end': {
-            'dateTime': end_time.strftime('%Y-%m-%dT%H:%M:%S'),
-            'timeZone': 'Your_Timezone_Here',  # e.g., 'America/New_York'
+            'dateTime': unix_to_iso8601(end_time),
+            'timeZone': 'UTC'
         },
     }
+    print(f"Adding event to calendar: {event}")
 
-    # Add event to calendar
-    event = service.events().insert(calendarId=calendar_id, body=event).execute()
-    print('Event created: %s' % (event.get('htmlLink')))
+    return service.events().insert(calendarId=calendar_id, body=event).execute()
 
 
 if __name__ == "__main__":
