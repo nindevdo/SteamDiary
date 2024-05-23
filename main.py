@@ -70,7 +70,7 @@ def main(user_id):
             # Check if gameid has changed
             if current_gameid != previous_gameid:
                 # If this is not the first game, calculate the duration of the previous game
-                if start_time is not None and current_gameid is not None:
+                if start_time is not None and previous_gameid is not None:
                     end_time = time.time()
                     duration = end_time - start_time
                     gamename = get_game_name(previous_gameid)
