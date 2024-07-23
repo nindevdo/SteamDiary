@@ -7,7 +7,7 @@ A simple application that can be used to add google calendar events for game tim
 
 # @T&Ts:
 
-- This will only log time played while the user is online
+- This will only log time played while the user is online. However, if you want to be sneaky and have two machines with Steam installed then you can go invisible on the machine you're gaming on and online on the one you are not.
 
 # Prerequisites:
 
@@ -23,12 +23,11 @@ A simple application that can be used to add google calendar events for game tim
 - Install docker and docker-compose
 - Create a `.env` file in the root of the project
 - Add the following environment variables to the `.env` file
-  - STEAM_API_KEY=your_steam_api_key
-  - GOOGLE_CALENDAR_ID=your_google_calendar_id
-  - GOOGLE_APPLICATION_CREDENTIALS=your_google_application_credentials
-  - GOOGLE_CALENDAR_ID=your_google_calendar_id
-  - GOOGLE_CALENDAR_SUMMARY=your_google_calendar_summary
-  - GOOGLE_CALENDAR_DESCRIPTION=your_google_calendar_description
+  - GOOGLE_CALENDAR_ID
+  - GOOGLE_SERVICE_ACCOUNT_FILE
+  - STEAM_API_KEY
+  - STEAM_USER_ID
+  - TIME_INTERVAL
 - Setup a google cloud project and enable the google calendar API
 - Create a service account and download the json file
 - Create a new calendar
