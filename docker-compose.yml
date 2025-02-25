@@ -10,3 +10,5 @@ services:
       - STEAM_API_KEY=${STEAM_API_KEY:-api_key}
       - STEAM_USER_ID=${STEAM_USER_ID:-username}
       - TIME_INTERVAL=${TIME_INTERVAL:-60}
+    volumes:
+      - ${PWD}/.credentials.json:/app/.credentials.json

@@ -1,39 +1,108 @@
-# SteamDiary
+<p align="center">
+  <img src="./img/steamdiarylogo.png" alt="steamdiary banner" width="600"/>
+</p>
+# 🎮 steamdiary ⏳📅  
 
-SteamDiary integrate with Google Calendar adding time played and achievements
-A simple application that can be used to add google calendar events for game time played for all steam games.
+**track your steam gameplay and achievements effortlessly!**  
+steamdiary integrates with **google calendar** to log your **playtime** and **achievements** automatically. never forget your epic gaming sessions again! 🏆✨  
 
-![calendar event](./img/calendar_event.png)
+---
 
-# @T&Ts:
+## 🚀 features  
 
-- This will only log time played while the user is online. However, if you want to be sneaky and have two machines with Steam installed then you can go invisible on the machine you're gaming on and online on the one you are not.
+✅ **automated logging** – adds events to your **google calendar** for every session you play.  
+🏅 **achievement tracking** – logs achievements earned as calendar events, so you can flex your progress.  
+🛠️ **easy setup** – just connect steam & google calendar, and you’re good to go!  
 
-# Prerequisites:
+---
 
-- Steam API key
-- Google Calendar API key
-- Google Calendar ID
-- docker-compose & docker
-- Google Cloud Project
+## 🔧 prerequisites  
 
-# How to use:
+before setting up **steamdiary**, make sure you have:  
 
-- Clone the repo
-- Install docker and docker-compose
-- Create a `.env` file in the root of the project
-- Add the following environment variables to the `.env` file
-  - GOOGLE_CALENDAR_ID
-  - GOOGLE_SERVICE_ACCOUNT_FILE
-  - STEAM_API_KEY
-  - STEAM_USER_ID
-  - TIME_INTERVAL
-- Setup a google cloud project and enable the google calendar API
-- Create a service account and download the json file
-- Create a new calendar
-  - go to calendar settings and share the calendar with the service account email
-  - note down the calendar id
-- Add the json file to the root of the project
-- export your environment variables set in docker-compose file
-- Run the program and `docker-compose up`
-- benefit...
+🔑 **[steam api key](https://steamcommunity.com/dev/apikey)** – required to fetch your gameplay data.  
+☁️ **google cloud project** – to access **google calendar api**.  
+📅 **google calendar** – a calendar where steamdiary will log events.  
+🐳 **docker & docker compose** – for easy deployment.  
+
+---
+
+## ⚙️ setup instructions  
+
+### 1️⃣ get your steam api key  
+
+1. visit the **[steam api key registration page](https://steamcommunity.com/dev/apikey)**.  
+2. log in with your **steam account**.  
+3. register a **new api key** and **save it** for later.  
+
+---
+
+### 2️⃣ set up google calendar api  
+
+#### 🌟 a) create a google cloud project  
+
+1. open the **[google cloud console](https://console.cloud.google.com/)**.  
+2. click **"select a project"** → **"new project"**.  
+3. enter a project name & hit **create**.  
+
+#### 📅 b) enable google calendar api  
+
+1. in the **[api library](https://console.cloud.google.com/apis/library)**, search for **google calendar api**.  
+2. click **"enable"**.  
+
+#### 🔐 c) create a service account  
+
+1. go to **apis & services** → **credentials**.  
+2. click **"create credentials"** → **"service account"**.  
+3. give it a name & hit **"create and continue"**.  
+4. assign the role **project → editor** → **continue**.  
+5. click **done**.  
+
+#### 🔑 d) generate a service account key  
+
+1. in **credentials**, click on your **newly created service account**.  
+2. open the **keys** tab → **add key** → **create new key**.  
+3. select **json** and click **create** (this will download the key file).  
+
+#### 🔄 e) share google calendar with your service account  
+
+1. open **[google calendar](https://calendar.google.com/)**.  
+2. create a **new calendar** dedicated to steamdiary logs.  
+3. in the **calendar settings**, under **"share with specific people"**, add the **service account email** with **"make changes to events"** permission.  
+4. copy the **calendar id** (you’ll need this later).  
+
+---
+
+### 3️⃣ configure environment variables  
+
+1. **clone the repository**:  
+
+   ```bash
+   git clone https://github.com/nindevdo/steamdiary.git
+   cd steamdiary
+
+place the downloaded service account json key file in the project's root directory.
+
+create a .env file in the root directory with the following variables:
+
+```
+    google_calendar_id=your_calendar_id
+    google_service_account_file=path_to_your_service_account_key.json
+    steam_api_key=your_steam_api_key
+    steam_user_id=your_steam_user_id
+    time_interval=interval_in_minutes
+```
+
+
+### 4. deploy with docker
+
+1. ensure docker and docker compose are installed.
+2. build and run the docker container:
+```
+    docker-compose up --build
+```
+
+steamdiary will now monitor your steam gameplay and log events to your google calendar.
+contributing
+
+we welcome contributions! feel free to submit issues and pull requests.
