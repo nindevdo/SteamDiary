@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./img/steamdiarylogo.png" alt="steamdiary banner" width="600"/>
+  <img src="./img/banner.png" alt="steamdiary banner" width="100%" height="auto"/>
 </p>
 # 🎮 steamdiary ⏳📅  
 
