@@ -4,7 +4,7 @@
   <img src="./img/banner.png" alt="steamdiary banner" width="100%" height="auto"/>
 </p>
 
-<h3 align="center">SteamDiary integrates with **google calendar** to log your **playtime** and **achievements** automatically </br>never forget your epic gaming sessions again! 🏆✨ </h3>
+<h3 align="center">SteamDiary integrates with <b>google calendar</b> to log your <b>playtime</b> & <b>achievements</b> automatically. never forget your epic gaming sessions again! 🏆✨ </h3>
 
 ---
 
