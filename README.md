@@ -1,10 +1,10 @@
+<h1 align="center">🎮SteamDiary📅</h1>
+<h2 align="center">Track your Steam gameplay and achievements automatically in Google Calendar!</h2>  
 <p align="center">
   <img src="./img/banner.png" alt="steamdiary banner" width="100%" height="auto"/>
 </p>
-# 🎮 steamdiary ⏳📅  
 
-**track your steam gameplay and achievements effortlessly!**  
-steamdiary integrates with **google calendar** to log your **playtime** and **achievements** automatically. never forget your epic gaming sessions again! 🏆✨  
+<h3 align="center">SteamDiary integrates with **google calendar** to log your **playtime** and **achievements** automatically </br>never forget your epic gaming sessions again! 🏆✨ </h3>
 
 ---
 
