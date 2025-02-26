@@ -1,10 +1,11 @@
-import requests
-import pytz
-import os
-import json
-import time
 import datetime
+import json
 import logging
+import os
+import pytz
+import requests
+import time
+import humanize
 
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
@@ -16,10 +17,164 @@ logging.basicConfig(level=logging.INFO)
 user_id = os.getenv("STEAM_USER_ID")
 api_key = os.getenv("STEAM_API_KEY")
 
-service_account_file = os.getenv("GOOGLE_SERVICE_ACCOUNT_FILE")
 calendar_id = os.getenv("GOOGLE_CALENDAR_ID")
+service_account_file = os.getenv("GOOGLE_SERVICE_ACCOUNT_FILE")
 credentials = Credentials.from_service_account_file(service_account_file, scopes=SCOPES)
 time_interval = int(os.getenv("TIME_INTERVAL", 60))
+
+GENRE_genre_emoji_MAP = {
+    "4X": "🌌",
+    "Action": "🔥",
+    "Adventure": "🏕️",
+    "Anime": "🎌",
+    "Battle Royale": "🏆",
+    "Board Game": "🎲",
+    "Building": "🏗️",
+    "Bullet Hell": "💥",
+    "Card & Board": "🃏",
+    "Card Game": "🃏",
+    "Casual": "☕",
+    "City Builder": "🏙️",
+    "Colony Sim": "🌐",
+    "Comedy": "😂",
+    "Crafting": "🔨",
+    "Cyberpunk": "🦾",
+    "Dating Sim": "❤️",
+    "Detective": "🕵️‍♀️",
+    "Dungeon Crawler": "🗝️",
+    "Dystopian": "🏙️",
+    "Economy": "💰",
+    "Educational": "📚",
+    "Espionage": "🕶️",
+    "Exploration": "🧭",
+    "Family Friendly": "👪",
+    "Fantasy": "🐉",
+    "Farming": "🌾",
+    "Fighting": "🥊",
+    "Fishing": "🎣",
+    "Flight": "✈️",
+    "Gothic": "🦇",
+    "Hack & Slash": "🗡️",
+    "Historical": "🏰",
+    "Horror": "👻",
+    "Hunting": "🏹",
+    "Indie": "🎨",
+    "JRPG": "🎎",
+    "Life Sim": "🏡",
+    "Looter Shooter": "💰🔫",
+    "Lovecraftian": "🐙",
+    "MMORPG": "🌐",
+    "MOBA": "⚔️",
+    "Management": "📈",
+    "Match 3": "🔷🔶🔷",
+    "Medieval": "⚔️",
+    "Metroidvania": "🧩",
+    "Military": "🎖️",
+    "Minigames": "🎮",
+    "Mining": "⛏️",
+    "Multiplayer": "👥",
+    "Music": "🎸",
+    "Mystery": "🕵️‍♂️",
+    "Narrative": "📝",
+    "Noir": "🕶️",
+    "Nonlinear": "🔀",
+    "Open World": "🌍",
+    "Party Game": "🎉",
+    "Perma Death": "💀",
+    "Physics": "⚙️",
+    "Pinball": "🎱",
+    "Pirates": "🏴‍☠️",
+    "Platformer": "🦘",
+    "Point & Click": "🖱️",
+    "Politics": "🏛️",
+    "Post-apocalyptic": "☢️",
+    "Post-apocalyptic": "☢️",
+    "Procedural Generation": "🔀",
+    "Procedural Generation": "🔀",
+    "Puzzle": "🧩",
+    "Quick-Time Events": "⏩",
+    "RPG": "⚔️",
+    "Racing": "🏎️",
+    "Real-Time": "⏱️",
+    "Replay Value": "🔁",
+    "Resource Management": "📊",
+    "Retro": "🕹️",
+    "Rhythm": "🎵",
+    "Roguelike": "🎲",
+    "Roguelite": "🎲",
+    "Romance": "💖",
+    "Sandbox": "🪵",
+    "Satire": "😂",
+    "Sci-Fi": "🚀",
+    "Shooter": "🔫",
+    "Short": "⏳",
+    "Side Scroller": "➡️",
+    "Silent Protagonist": "🤐",
+    "Simulation": "🎛️",
+    "Souls-like": "💀",
+    "Space": "🌌",
+    "Split Screen": "🖥️🖥️",
+    "Sports": "🏆",
+    "Stealth": "🕵️",
+    "Steampunk": "⚙️",
+    "Story Rich": "📚",
+    "Strategy": "🧠",
+    "Superhero": "🦸",
+    "Supernatural": "🔮",
+    "Surreal": "🌈",
+    "Survival": "🛠️",
+    "Text-Based": "📝",
+    "Third-Person Shooter": "🔫",
+    "Time Manipulation": "⏰",
+    "Time Travel": "🕰️",
+    "Top-Down Shooter": "🔝",
+    "Touch-Friendly": "👆",
+    "Tower Defense": "🛡️",
+    "Trading": "💱",
+    "Trains": "🚂",
+    "Transport": "🚌",
+    "Turn-Based": "🔄",
+    "Twin Stick Shooter": "🎮",
+    "Typing": "⌨️",
+    "VR": "🕶️",
+    "Vampire": "🧛",
+    "Visual Novel": "📖",
+    "Voice Control": "🎙️",
+    "Voxel": "🔲",
+    "Walking Simulator": "🚶",
+    "War": "⚔️",
+    "Wargame": "⚔️",
+    "Web Publishing": "🌐",
+    "Western": "🤠",
+    "Wild West": "🤠",
+    "Word Game": "🔤",
+    "World War II": "🌍",
+    "Zombies": "🧟",
+    "Zombies": "🧟",
+    "eSports": "🏅",
+} #😌
+
+def get_genre_genre_emoji(game_id):
+    """Returns a string of genre_emojis for a list of game genres."""
+    logging.info(f"🪓Executing {get_genre_genre_emoji.__name__} function")
+    genres = get_game_genre(game_id)
+    return "\n".join(f"{GENRE_genre_emoji_MAP.get(genre, '🎮')} {genre}" for genre in genres)
+
+
+def get_game_genre(app_id):
+    """Fetch game genre from Steam API using the app ID."""
+    logging.info(f"🪓Executing {get_game_genre.__name__} function")
+    url = f"http://store.steampowered.com/api/appdetails?appids={app_id}"
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        data = response.json()
+        if data[str(app_id)]["success"]:
+            genres = data[str(app_id)]["data"].get("genres", [])
+            return [genre["description"] for genre in genres]
+        else:
+            return None
+    return None
 
 
 # Get games for user
@@ -98,16 +253,17 @@ def main(user_id):
                         total_time_played.get(gamename, 0) + duration
                     )
                     logging.info(f"Total time played for {gamename}: {total_time_played[gamename]} seconds")
-                    add_event_to_calendar(gamename, duration, start_time, end_time)
+                    add_event_to_calendar(gamename, previous_gameid, duration, start_time, end_time)
 
                 # Log beginning time for the new game
                 start_time = time.time()
                 gamename = get_game_name(current_gameid, data)
                 logging.info("=============================================")
                 logging.info(f"Game {gamename} started at {start_time}")
-                logging.info(f"Total time played: {total_time_played}")
+                logging.info(f"Total time played: {humanize.naturaldelta(total_time_played)}")
                 logging.info(f"Current gameid: {current_gameid}")
                 logging.info(f"Previous gameid: {previous_gameid}")
+                logging.info(f"Data: {data}")
                 # Update previous_gameid
                 previous_gameid = current_gameid
                 logging.info(f"updated previous_gameid: {previous_gameid}")
@@ -159,23 +315,27 @@ def unix_to_iso8601(timestamp):
     ).isoformat()
 
 
-def add_event_to_calendar(gamename, duration, start_time, end_time):
+def add_event_to_calendar(gamename, game_id, duration, start_time, end_time):
     logging.info(f"🪓Executing {add_event_to_calendar.__name__} function")
+    genre_emoji = get_genre_genre_emoji(game_id)
+    time_played = humanize.naturaldelta(duration)
 
     service = build("calendar", "v3", credentials=credentials)
-    description = f"SteamDiary entry for {gamename} with {duration} time played."
-    location = "🎮 Steam"
-    summary = f"🧙 {gamename}"
+
+    summary = f"🎮 {gamename}"
+    location = "📔 SteamDiary"
+    description = f":Played {gamename} for {time_played}⌛: \n{genre_emoji}"
 
     event = {
         "summary": summary,
+        "colorId": 1,
         "location": location,
         "description": description,
         "start": {"dateTime": unix_to_iso8601(start_time), "timeZone": "UTC"},
         "end": {"dateTime": unix_to_iso8601(end_time), "timeZone": "UTC"},
     }
 
-    logging.info(f"Adding event to calendar: {event}")
+    logging.info(f"➕ Adding event to calendar: {event}")
     return service.events().insert(calendarId=calendar_id, body=event).execute()
 
 

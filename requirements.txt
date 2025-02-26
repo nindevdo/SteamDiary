@@ -1,5 +1,7 @@
+beautifulsoup4
+humanize
 google-api-python-client
-pytz
 google-auth
 google-auth-httplib2
 google-auth-oauthlib
+pytz
