@@ -75,6 +75,7 @@ before setting up **steamdiary**, make sure you have:
 ---
 
 ## ⚙️ setup instructions  
+[![Watch the video](https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 
 ### 1️⃣ get your steam api key  
 
