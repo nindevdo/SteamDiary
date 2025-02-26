@@ -20,6 +20,7 @@ I envisioned a SaaS product that would:
 ✅ Give players a clear timeline of their gaming history.
 
 I thought it was a no-brainer. Steam already had an API, and the idea of a "Steam activity tracker" sounded like something people would actually use.
+
 ### 🚧 The Steam API Wall
 As I started digging into Steam's API, I quickly hit a major roadblock:
 Steam doesn’t make personal user data easily accessible.
@@ -43,6 +44,8 @@ So I open-sourced SteamDiary, allowing:
 - Gamers to log their playtime, even if Steam doesn’t officially support it.
 
 Now, SteamDiary is a fully open-source project, available for free on GitHub. No subscriptions, no restrictions—just pure automation for those who want it.
+
+It's just a fun little tool that I like to use nothing serious.
 
 ### 💡 What’s Next?
 
@@ -132,11 +135,11 @@ place the downloaded service account json key file in the project's root directo
 create a .env file in the root directory with the following variables:
 
 ```
-    google_calendar_id=your_calendar_id
-    google_service_account_file=path_to_your_service_account_key.json
-    steam_api_key=your_steam_api_key
-    steam_user_id=your_steam_user_id
-    time_interval=interval_in_minutes
+    GOOGLE_CALENDAR_ID=...@group.calendar.google.com
+    GOOGLE_SERVICE_ACCOUNT_FILE=./credentials.json
+    STEAM_API_KEY=
+    STEAM_USER_ID=
+    TIME_INTERVAL="60"
 ```
 
 
@@ -149,6 +152,6 @@ create a .env file in the root directory with the following variables:
 ```
 
 steamdiary will now monitor your steam gameplay and log events to your google calendar.
-contributing
+contributing but you must be set to online.
 
 we welcome contributions! feel free to submit issues and pull requests.
