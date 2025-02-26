@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SteamDiary - Track Your Steam Gaming</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.2.12/marked.min.js"></script>
+    <script>
+        const repo = "nindevdo/SteamDiary";  // Change to your repo
+        const readmeUrl = `https://raw.githubusercontent.com/${repo}/main/README.md`;
+        const repoApiUrl = `https://api.github.com/repos/${repo}`;
+        const issuesApiUrl = `https://api.github.com/repos/${repo}/issues?state=open&per_page=5`;
+
+        async function loadReadme() {
+            const cachedReadme = localStorage.getItem("readmeContent");
+            const cachedTime = localStorage.getItem("readmeTimestamp");
+            const cacheValidity = 60 * 60 * 1000;  // Cache for 1 hour
+
+            if (cachedReadme && cachedTime && (Date.now() - cachedTime < cacheValidity)) {
+                document.getElementById("readme-content").innerHTML = marked.parse(cachedReadme);
+                return;
+            }
+
+            try {
+                const response = await fetch(readmeUrl);
+                if (!response.ok) throw new Error("Failed to load README");
+
+                const markdown = await response.text();
+                document.getElementById("readme-content").innerHTML = marked.parse(markdown);
+
+                localStorage.setItem("readmeContent", markdown);
+                localStorage.setItem("readmeTimestamp", Date.now());
+
+            } catch (error) {
+                document.getElementById("readme-content").innerHTML = "⚠️ Error loading README.";
+                console.error(error);
+            }
+        }
+
+        async function loadGitHubStats() {
+            try {
+                const response = await fetch(repoApiUrl);
+                if (!response.ok) throw new Error("Failed to load GitHub repo details");
+
+                const data = await response.json();
+                document.getElementById("github-stats").innerHTML = `
+                    ⭐ Stars: ${data.stargazers_count} | 🍴 Forks: ${data.forks_count} | 🛠️ Issues: ${data.open_issues_count}
+                `;
+            } catch (error) {
+                console.error("⚠️ Error fetching GitHub repository data.", error);
+            }
+        }
+
+        async function loadGitHubIssues() {
+            try {
+                const response = await fetch(issuesApiUrl);
+                if (!response.ok) throw new Error("Failed to load issues");
+
+                const issues = await response.json();
+                let issuesHTML = issues.length
+                    ? issues.map(issue => `<li>🔹 <a href="${issue.html_url}" target="_blank">${issue.title}</a></li>`).join("")
+                    : "<li>No open issues.</li>";
+
+                document.getElementById("github-issues").innerHTML = `<ul>${issuesHTML}</ul>`;
+            } catch (error) {
+                document.getElementById("github-issues").innerHTML = "⚠️ Error loading issues.";
+                console.error(error);
+            }
+        }
+
+        function toggleReadme() {
+            document.getElementById("readme-container").classList.toggle("collapsed");
+        }
+
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({ behavior: "smooth" });
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.dataset.theme || "dark";
+            const newTheme = currentTheme === "dark" ? "light" : "dark";
+            body.dataset.theme = newTheme;
+            localStorage.setItem("theme", newTheme);
+        }
+
+        function searchReadme() {
+            const query = document.getElementById("search-input").value.toLowerCase();
+            const content = document.getElementById("readme-content");
+            if (!query) return;
+
+            const regex = new RegExp(query, "gi");
+            content.innerHTML = content.innerHTML.replace(/<mark>(.*?)<\/mark>/g, "$1"); // Remove old highlights
+            content.innerHTML = content.innerHTML.replace(regex, match => `<mark>${match}</mark>`);
+        }
+
+        function showBackToTop() {
+            document.getElementById("back-to-top").style.display = window.scrollY > 300 ? "block" : "none";
+        }
+
+        window.onload = () => {
+            loadReadme();
+            loadGitHubStats();
+            loadGitHubIssues();
+
+            const savedTheme = localStorage.getItem("theme") || "dark";
+            document.body.dataset.theme = savedTheme;
+
+            window.onscroll = showBackToTop;
+        };
+    </script>
+    <style>
+        :root {
+            --bg-dark: #0d1117;
+            --text-dark: #ffffff;
+            --bg-light: #ffffff;
+            --text-light: #000000;
+            --button-dark: #238636;
+            --button-light: #0366d6;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body[data-theme="light"] {
+            background-color: var(--bg-light);
+            color: var(--text-light);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #fff;
+            background-color: var(--button-dark);
+        }
+
+        body[data-theme="light"] .button {
+            background-color: var(--button-light);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 8px 12px;
+            background: var(--button-dark);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        body[data-theme="light"] .theme-toggle {
+            background: var(--button-light);
+        }
+
+        .search-container {
+            margin-top: 10px;
+        }
+
+        .readme-section {
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out;
+        }
+
+        .readme-section.collapsed {
+            max-height: 50px;
+        }
+
+        mark {
+            background-color: yellow;
+            color: black;
+        }
+
+        #back-to-top {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px;
+            background: var(--button-dark);
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙 Toggle Theme</button>
+
+    <header class="text-center py-10">
+        <h1 class="text-4xl font-bold">🎮 SteamDiary ⏳📅</h1>
+        <p class="text-lg text-gray-300">Effortlessly track your Steam gaming sessions in Google Calendar!</p>
+        <div id="github-stats">Loading GitHub stats...</div>
+    </header>
+
+    <section class="container">
+        <h2>📖 Latest README</h2>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="🔍 Search README">
+            <button class="button" onclick="searchReadme()">Search</button>
+        </div>
+        <button onclick="toggleReadme()" class="button">🔽 Toggle README</button>
+        <div id="readme-container" class="readme-section collapsed">
+            <div id="readme-content">Loading README...</div>
+        </div>
+        <a href="https://github.com/nindevdo/SteamDiary" target="_blank" class="button">📂 View on GitHub</a>
+    </section>
+
+    <section class="container">
+        <h2>🐞 Latest GitHub Issues</h2>
+        <div id="github-issues">Loading issues...</div>
+    </section>
+
+    <button id="back-to-top" onclick="scrollToSection('top')">⬆ Back to Top</button>
+</body>
+</html>

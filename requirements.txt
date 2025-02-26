@@ -1,4 +1,3 @@
-beautifulsoup4
 humanize
 google-api-python-client
 google-auth
