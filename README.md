@@ -43,7 +43,8 @@ So I open-sourced SteamDiary, allowing:
 - Gamers to log their playtime, even if Steam doesn’t officially support it.
 
 Now, SteamDiary is a fully open-source project, available for free on GitHub. No subscriptions, no restrictions—just pure automation for those who want it.
-💡 What’s Next?
+
+### 💡 What’s Next?
 
 Even though I abandoned the SaaS model, I’m still improving SteamDiary.
 - ✅ Making setup easier so non-tech users can deploy it quickly.
@@ -74,7 +75,7 @@ before setting up **steamdiary**, make sure you have:
 ## ⚙️ setup instructions  
 [![Watch the video](https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 
-### 1️⃣ get your steam api key  
+### get your steam api key  
 
 1. visit the **[steam api key registration page](https://steamcommunity.com/dev/apikey)**.  
 2. log in with your **steam account**.  
@@ -82,7 +83,7 @@ before setting up **steamdiary**, make sure you have:
 
 ---
 
-### 2️⃣ set up google calendar api  
+### set up google calendar api  
 
 #### 🌟 a) create a google cloud project  
 
@@ -118,7 +119,7 @@ before setting up **steamdiary**, make sure you have:
 
 ---
 
-### 3️⃣ configure environment variables  
+### configure environment variables  
 
 1. **clone the repository**:  
 
