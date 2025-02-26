@@ -1,10 +1,10 @@
-<h1 align="center">🎮SteamDiary📅</h1>
+<h1 align="center">🎮 SteamDiary 📅</h1>
 <h2 align="center">Track your Steam gameplay & achievements!</h2>  
 <p align="center">
   <img src="./img/banner.png" alt="steamdiary banner" width="100%" height="auto"/>
 </p>
 
-<h3 align="center">SteamDiary integrates with <b>google calendar</b> to log your <b>playtime⌛</b> & <b>🏆achievements</b> </br>never forget your epic gaming sessions again!</h3>
+<h4 align="center">SteamDiary integrates with <b>google calendar</b> to log your <b>playtime⌛</b> & <b>🏆achievements</b> </br>never forget your epic gaming sessions again!</h4>
 
 ---
 
