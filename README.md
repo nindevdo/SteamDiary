@@ -7,7 +7,7 @@
 <h4 align="center">SteamDiary integrates with <b>google calendar</b> to log your <b>playtime⌛</b> & <b>🏆achievements</b> </br>never forget your epic gaming sessions again!</h4>
 
 ---
-## 🎮 The Backstory of SteamDiary: From SaaS to Open Source
+## 🎮 The Backstory of SteamDiary
 
 It all started with a simple idea: What if you could track your Steam gaming history in a calendar, like a personal gaming diary?
 
@@ -29,21 +29,15 @@ Unlike other modern platforms, there’s no OAuth-based API for users to grant a
 Instead, Steam forces each user to manually generate an API key, which makes automation nearly impossible for a SaaS business model.
 
 I realized that without an official way to authenticate users dynamically, my SaaS idea was dead in the water.
-### 🔥 The Pivot: Open Sourcing SteamDiary
+### 🔥 The Pivot
 At this point, I had two choices:
 - Abandon the project and move on.
 - Open source it and let others use it however they want.
 
-Since the concept was already built and working, I figured:
-"Why not just give it away?"
-
 So I open-sourced SteamDiary, allowing:
-
 - Anyone to run it on their own.
 - Developers to contribute and improve it.
 - Gamers to log their playtime, even if Steam doesn’t officially support it.
-
-Now, SteamDiary is a fully open-source project, available for free on GitHub. No subscriptions, no restrictions—just pure automation for those who want it.
 
 It's just a fun little tool that I like to use nothing serious.
 
