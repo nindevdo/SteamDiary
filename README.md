@@ -7,7 +7,7 @@
 <h4 align="center">SteamDiary integrates with <b>google calendar</b> to log your <b>playtime⌛</b> & <b>🏆achievements</b> </br>never forget your epic gaming sessions again!</h4>
 
 ---
-## 🎮 The Backstory of SteamDiary: From SaaS to Open Source
+## 🎮 The Backstory of SteamDiary
 
 It all started with a simple idea: What if you could track your Steam gaming history in a calendar, like a personal gaming diary?
 
@@ -29,7 +29,7 @@ Unlike other modern platforms, there’s no OAuth-based API for users to grant a
 Instead, Steam forces each user to manually generate an API key, which makes automation nearly impossible for a SaaS business model.
 
 I realized that without an official way to authenticate users dynamically, my SaaS idea was dead in the water.
-### 🔥 The Pivot: Open Sourcing SteamDiary
+### 🔥 The Pivot
 At this point, I had two choices:
 - Abandon the project and move on.
 - Open source it and let others use it however they want.
@@ -149,9 +149,3 @@ create a .env file in the root directory with the following variables:
 2. build and run the docker container:
 ```
     docker-compose up --build
-```
-
-steamdiary will now monitor your steam gameplay and log events to your google calendar.
-contributing but you must be set to online.
-
-we welcome contributions! feel free to submit issues and pull requests.
