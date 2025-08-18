@@ -7,6 +7,7 @@
 <h4 align="center">SteamDiary integrates with <b>google calendar</b> to log your <b>playtime⌛</b> & <b>🏆achievements</b> </br>never forget your epic gaming sessions again!</h4>
 
 ---
+
 ## 🎮 The Backstory of SteamDiary
 
 It all started with a simple idea: What if you could track your Steam gaming history in a calendar, like a personal gaming diary?
@@ -22,6 +23,7 @@ I envisioned a SaaS product that would:
 I thought it was a no-brainer. Steam already had an API, and the idea of a "Steam activity tracker" sounded like something people would actually use.
 
 ### 🚧 The Steam API Wall
+
 As I started digging into Steam's API, I quickly hit a major roadblock:
 Steam doesn’t make personal user data easily accessible.
 Unlike other modern platforms, there’s no OAuth-based API for users to grant access to their playtime, achievements, or game stats dynamically.
@@ -29,8 +31,11 @@ Unlike other modern platforms, there’s no OAuth-based API for users to grant a
 Instead, Steam forces each user to manually generate an API key, which makes automation nearly impossible for a SaaS business model.
 
 I realized that without an official way to authenticate users dynamically, my SaaS idea was dead in the water.
+
 ### 🔥 The Pivot
+
 At this point, I had two choices:
+
 - Abandon the project and move on.
 - Open source it and let others use it however they want.
 
@@ -50,6 +55,7 @@ It's just a fun little tool that I like to use nothing serious.
 ### 💡 What’s Next?
 
 Even though I abandoned the SaaS model, I’m still improving SteamDiary.
+
 - ✅ Making setup easier so non-tech users can deploy it quickly.
 - ✅ Adding better logging & UI enhancements for tracking game sessions.
 - ✅ Exploring potential workarounds for getting more Steam data.
@@ -76,7 +82,6 @@ before setting up **steamdiary**, make sure you have:
 ---
 
 ## ⚙️ setup instructions  
-[![Watch the video](https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 
 ### get your steam api key  
 
@@ -142,10 +147,10 @@ create a .env file in the root directory with the following variables:
     TIME_INTERVAL="60"
 ```
 
-
 ### 4. deploy with docker
 
 1. ensure docker and docker compose are installed.
 2. build and run the docker container:
+
 ```
     docker-compose up --build
