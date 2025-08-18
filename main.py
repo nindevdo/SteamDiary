@@ -1,10 +1,7 @@
 import datetime
-import re
 import requests
-import json
 import logging
 import os
-import pytz
 import time
 import humanize
 
@@ -157,8 +154,7 @@ GENRE_genre_emoji_MAP = {
     "Zombies": "🧟",
     "Zombies": "🧟",
     "eSports": "🏅",
-} #😌
-
+}  # 😌
 
 
 def get_genre_genre_emoji(game_id):
@@ -167,7 +163,9 @@ def get_genre_genre_emoji(game_id):
     genres = get_game_genre(game_id)
     if not genres:
         return "🎮 No genre data available"
-    return "\n".join(f"{GENRE_genre_emoji_MAP.get(genre, '🎮')} {genre}" for genre in genres)
+    return "\n".join(
+        f"{GENRE_genre_emoji_MAP.get(genre, '🎮')} {genre}" for genre in genres
+    )
 
 
 def get_game_genre(app_id):
@@ -175,7 +173,7 @@ def get_game_genre(app_id):
     logging.info(f"🪓Executing {get_game_genre.__name__} function")
     url = f"http://store.steampowered.com/api/appdetails?appids={app_id}"
     response = requests.get(url)
-    
+
     if response.status_code == 200:
         data = response.json()
         if data[str(app_id)]["success"]:
@@ -233,21 +231,24 @@ def get_player_summaries(USER_ID):
         return {}
 
 
-
 def get_game_name(game_id, data={}):
     logging.info(f"🪓 Executing {get_game_name.__name__} function")
 
     url = f"https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key={API_KEY}&appid={game_id}&format=json"
     response = requests.get(url)
-    
+
     if response.status_code == 200 and response.json().get("game") != {}:
         game = response.json()["game"]
         return game.get("gameName")
-    elif 'response' in data and 'players' in data['response'] and len(data['response']['players']) > 0:
-        gameextrainfo = data['response']['players'][0].get('gameextrainfo')
+    elif (
+        "response" in data
+        and "players" in data["response"]
+        and len(data["response"]["players"]) > 0
+    ):
+        gameextrainfo = data["response"]["players"][0].get("gameextrainfo")
         return gameextrainfo
-    elif 'steamid' in data and 'gameextrainfo' in data:
-        gameextrainfo = data['gameextrainfo']
+    elif "steamid" in data and "gameextrainfo" in data:
+        gameextrainfo = data["gameextrainfo"]
         return gameextrainfo
     else:
         return "Unknown Game"
@@ -272,10 +273,14 @@ def get_achievement_schema(app_id):
         return {}
 
     data = response.json()
-    achievements = data.get("game", {}).get("availableGameStats", {}).get("achievements", [])
-    
+    achievements = (
+        data.get("game", {}).get("availableGameStats", {}).get("achievements", [])
+    )
+
     # Create a mapping of apiname → (real name, description)
-    return {ach["name"]: (ach["displayName"], ach["description"]) for ach in achievements}
+    return {
+        ach["name"]: (ach["displayName"], ach["description"]) for ach in achievements
+    }
 
 
 def get_player_achievements(steam_id, app_id):
@@ -288,12 +293,12 @@ def get_player_achievements(steam_id, app_id):
         return f"Error fetching data: {response.status_code}"
 
     data = response.json()
-    
+
     if not data.get("playerstats") or "achievements" not in data["playerstats"]:
         return "No achievements data found."
 
     achievements = data["playerstats"]["achievements"]
-    
+
     # Get achievement names from schema
     achievement_names = get_achievement_schema(app_id)
 
@@ -301,21 +306,29 @@ def get_player_achievements(steam_id, app_id):
         apiname = achievement["apiname"]
         unlocked = achievement["achieved"] == 1
         unlock_time = achievement["unlocktime"]
-        
+
         # Convert timestamp to human-readable format if unlocked
-        readable_time = datetime.datetime.utcfromtimestamp(unlock_time).strftime('%Y-%m-%d %H:%M:%S') if unlocked else "Not unlocked"
-        
+        readable_time = (
+            datetime.datetime.utcfromtimestamp(unlock_time).strftime(
+                "%Y-%m-%d %H:%M:%S"
+            )
+            if unlocked
+            else "Not unlocked"
+        )
+
         # Get real name and description safely
         achievement_info = achievement_names.get(apiname, None)
-        
 
         if achievement_info:
             real_name, description = achievement_info
         else:
             real_name, description = apiname, "No description available"
 
-        print(f"🏆 {real_name} - {('✅ Unlocked' if unlocked else '❌ Locked')} at {readable_time}")
+        print(
+            f"🏆 {real_name} - {('✅ Unlocked' if unlocked else '❌ Locked')} at {readable_time}"
+        )
         print(f"   📝 {description}\n")
+
 
 def get_unlocked_achievements(steam_id, app_id):
     """Fetch only unlocked achievements with timestamps."""
@@ -331,12 +344,11 @@ def get_unlocked_achievements(steam_id, app_id):
     achievements = data.get("playerstats", {}).get("achievements", [])
 
     return [
-        {
-            "apiname": ach["apiname"],
-            "unlocktime": ach["unlocktime"]
-        }
-        for ach in achievements if ach["achieved"] == 1
+        {"apiname": ach["apiname"], "unlocktime": ach["unlocktime"]}
+        for ach in achievements
+        if ach["achieved"] == 1
     ]
+
 
 def get_achievement_schema(app_id):
     """Fetch achievement names & descriptions."""
@@ -349,26 +361,35 @@ def get_achievement_schema(app_id):
         return {}
 
     data = response.json()
-    achievements = data.get("game", {}).get("availableGameStats", {}).get("achievements", [])
+    achievements = (
+        data.get("game", {}).get("availableGameStats", {}).get("achievements", [])
+    )
 
     return {ach["name"]: ach.get("displayName", ach["name"]) for ach in achievements}
 
 
 def achievement_exists(title):
     """Check if an achievement event already exists in Google Calendar."""
-    events_result = CAL_SERVICE.events().list(
-        calendarId=CALENDAR_ID,
-        q=title,  # Search by event title
-        singleEvents=True,
-        orderBy="startTime"
-    ).execute()
+    events_result = (
+        CAL_SERVICE.events()
+        .list(
+            calendarId=CALENDAR_ID,
+            q=title,  # Search by event title
+            singleEvents=True,
+            orderBy="startTime",
+        )
+        .execute()
+    )
 
     return len(events_result.get("items", [])) > 0
+
 
 def add_achievement_to_calendar(title, gamename, unlock_time):
     """Add an achievement as a Google Calendar event."""
     print(title)
-    readable_time = datetime.datetime.utcfromtimestamp(unlock_time).strftime('%Y-%m-%d %H:%M:%S')
+    readable_time = datetime.datetime.utcfromtimestamp(unlock_time).strftime(
+        "%Y-%m-%d %H:%M:%S"
+    )
     print(readable_time)
 
     if achievement_exists(title):
@@ -398,9 +419,12 @@ def sync_achievements_to_calendar(steam_id, gamename, app_id):
     for ach in achievements:
         apiname = ach["apiname"]
         unlock_time = ach["unlocktime"]
-        title = achievement_names.get(apiname, apiname)  # Default to apiname if not found
+        title = achievement_names.get(
+            apiname, apiname
+        )  # Default to apiname if not found
 
         add_achievement_to_calendar(title, gamename, unlock_time)
+
 
 # Run the script
 def add_event_to_calendar(gamename, game_id, duration, start_time, end_time):
@@ -442,19 +466,25 @@ def main(USER_ID):
             logging.info("=============================================")
             # Check if gameid has changed
             if current_gameid != previous_gameid:
-            #if previous_gameid is not None and current_gameid != previous_gameid:
+                # if previous_gameid is not None and current_gameid != previous_gameid:
                 # If this is not the first game, calculate the duration of the previous game
                 if start_time is not None and previous_gameid is not None:
                     end_time = time.time()
                     duration = end_time - start_time
                     gamename = get_game_name(previous_gameid, data)
-                    logging.info(f"Game {gamename} ended at {end_time}. Duration: {duration} seconds")
+                    logging.info(
+                        f"Game {gamename} ended at {end_time}. Duration: {duration} seconds"
+                    )
                     # Update total time played for the previous game
                     total_time_played[gamename] = (
                         total_time_played.get(gamename, 0) + duration
                     )
-                    logging.info(f"Total time played for {gamename}: {total_time_played[gamename]} seconds")
-                    add_event_to_calendar(gamename, previous_gameid, duration, start_time, end_time)
+                    logging.info(
+                        f"Total time played for {gamename}: {total_time_played[gamename]} seconds"
+                    )
+                    add_event_to_calendar(
+                        gamename, previous_gameid, duration, start_time, end_time
+                    )
                     sync_achievements_to_calendar(USER_ID, gamename, previous_gameid)
 
                 # Log beginning time for the new game
@@ -462,7 +492,9 @@ def main(USER_ID):
                 gamename = get_game_name(current_gameid, data)
                 logging.info("=============================================")
                 logging.info(f"Game {gamename} started at {start_time}")
-                logging.info(f"Total time played: {humanize.naturaldelta(total_time_played)}")
+                logging.info(
+                    f"Total time played: {humanize.naturaldelta(total_time_played)}"
+                )
                 logging.info(f"Current gameid: {current_gameid}")
                 logging.info(f"Previous gameid: {previous_gameid}")
                 # Update previous_gameid
