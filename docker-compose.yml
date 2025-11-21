@@ -4,11 +4,3 @@ services:
       context: ./
       dockerfile: ./Dockerfile
     restart: unless-stopped # REMOVE or comment to not run as service but for me I always want this running
-    environment:
-      - GOOGLE_CALENDAR_ID=${GOOGLE_CALENDAR_ID:-calendar_id}
-      - GOOGLE_SERVICE_ACCOUNT_FILE=${GOOGLE_SERVICE_ACCOUNT_FILE:-./credentials.json}
-      - STEAM_API_KEY=${STEAM_API_KEY:-api_key}
-      - STEAM_USER_ID=${STEAM_USER_ID:-username}
-      - TIME_INTERVAL=${TIME_INTERVAL:-60}
-    volumes:
-      - ${PWD}/.credentials.json:/app/.credentials.json

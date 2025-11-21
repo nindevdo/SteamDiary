@@ -4,6 +4,8 @@ import logging
 import os
 import time
 import humanize
+import json
+import base64
 
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
@@ -17,8 +19,27 @@ USER_ID = os.getenv("STEAM_USER_ID")
 API_KEY = os.getenv("STEAM_API_KEY")
 
 CALENDAR_ID = os.getenv("GOOGLE_CALENDAR_ID")
-SERVICE_ACCOUNT_FILE = os.getenv("GOOGLE_SERVICE_ACCOUNT_FILE")
-CREDENTIALS = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+SERVICE_ACCOUNT_FILE = os.getenv("GOOGLE_SERVICE_ACCOUNT_FILE", "./.credentials.json")
+
+# Check if we have base64 credentials to write to file
+GOOGLE_SERVICE_ACCOUNT_JSON_B64 = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON_B64")
+if GOOGLE_SERVICE_ACCOUNT_JSON_B64:
+    # Decode base64 credentials and write to the expected file location
+    try:
+        json_str = base64.b64decode(GOOGLE_SERVICE_ACCOUNT_JSON_B64).decode('utf-8')
+        with open(SERVICE_ACCOUNT_FILE, 'w') as f:
+            f.write(json_str)
+        logging.info(f"✅ Credentials written to {SERVICE_ACCOUNT_FILE} from environment variable")
+    except Exception as e:
+        logging.error(f"❌ Failed to write credentials from environment variable: {e}")
+        raise
+
+# Use the service account file (either existing or just created from env var)
+if os.path.exists(SERVICE_ACCOUNT_FILE):
+    CREDENTIALS = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+else:
+    raise ValueError(f"Credentials file not found at {SERVICE_ACCOUNT_FILE} and no GOOGLE_SERVICE_ACCOUNT_JSON_B64 environment variable provided")
+
 CAL_SERVICE = build("calendar", "v3", credentials=CREDENTIALS)
 STEAM_OPENID_URL = "https://steamcommunity.com/openid/login"
 STEAM_API_KEY_URL = "https://steamcommunity.com/dev/apikey"
