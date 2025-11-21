@@ -3,7 +3,7 @@ services:
     build:
       context: ./
       dockerfile: ./Dockerfile
-    restart: always # REMOVE or comment to not run as service but for me I always want this running
+    restart: unless-stopped # REMOVE or comment to not run as service but for me I always want this running
     environment:
       - GOOGLE_CALENDAR_ID=${GOOGLE_CALENDAR_ID:-calendar_id}
       - GOOGLE_SERVICE_ACCOUNT_FILE=${GOOGLE_SERVICE_ACCOUNT_FILE:-./credentials.json}
